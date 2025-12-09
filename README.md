@@ -44,4 +44,22 @@ This simulates simplified UNIX-like file system behavior.
 ## Compilation
 
 ```bash
-gcc -std=c11 -Wall -Wextra -o mini_fs mini_fs.c 
+gcc -std=c11 -Wall -Wextra -o mini_fs mini_fs.c
+
+---
+
+## Why This Project Matters
+
+This project provides a practical, hands-on understanding of key operating system concepts, including:
+
+- how file systems organize hierarchical data  
+- how directories and files are represented internally  
+- how path traversal works across nested directories  
+- how recursion enables tree-based operations such as listing and traversal  
+
+It is especially useful for learning:
+
+- systems programming  
+- operating system fundamentals  
+- storage and file system concepts  
+
