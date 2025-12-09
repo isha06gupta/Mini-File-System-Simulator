@@ -7,7 +7,7 @@ This project was built to explore **operating system fundamentals** such as dire
 
 ---
 
-##Features  
+## Features  
 
 ### ** Directory Operations**
 - **mkdir `<path>`** — Create a directory  
@@ -46,11 +46,3 @@ This mirrors simplified UNIX-like file system behavior.
 ```bash
 gcc -std=c11 -Wall -Wextra -o mini_fs mini_fs.c
 
-##  Sample Usage
-mkdir dir1
-mkdir dir1/sub
-touch dir1/sub/hello.txt
-write dir1/sub/hello.txt Hello_Isha
-read dir1/sub/hello.txt
-tree
-pwd
