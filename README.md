@@ -115,4 +115,19 @@ Isha Gupta
 
 ```
 
+If you don’t close it, GitHub thinks **everything below it (Author)** is still code → so it appears inside the grey box.
+
+---
+
+# ✅ FIX: Here is your corrected **ENDING portion only**  
+Replace ONLY this part at the bottom of your README:
+
+---
+
+### ❌ Wrong (your version)
+```markdown
+## Project Structure
+
+
+
 
