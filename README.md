@@ -44,4 +44,4 @@ This simulates simplified UNIX-like file system behavior.
 ## Compilation
 
 ```bash
-gcc -std=c11 -Wall -Wextra -o mini_fs mini_fs.c
+gcc -std=c11 -Wall -Wextra -o mini_fs mini_fs.c 
