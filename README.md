@@ -1,51 +1,58 @@
-# Mini File System Simulator (C)
+Mini File System Simulator (C)
 
-A simple in-memory file system simulator written in C.  
+A simple in-memory file system simulator written in C.
 It supports hierarchical directories, file operations, recursive traversal, and shell-like navigation — similar to a minimal UNIX-style file system.
 
 This project was built to explore operating system fundamentals such as directory trees, path resolution, metadata handling, and command parsing.
 
----
+Features
+Directory Operations
 
-## Features  
+mkdir <path> — Create a directory
 
-### Directory Operations
-- mkdir `<path>` — Create a directory  
-- rmdir `<path>` — Remove an empty directory  
-- ls `<path>` — List contents of a directory  
-- cd `<path>` — Change current directory  
-- pwd — Print current working directory  
-- tree — Display the full directory hierarchy recursively  
+rmdir <path> — Remove an empty directory
 
----
+ls <path> — List contents of a directory
 
-## File Operations
-- touch `<path>` — Create an empty file  
-- write `<path>` `<text>` — Overwrite file content  
-- append `<path>` `<text>` — Append to existing content  
-- read `<path>` — Display file content  
-- rm `<path>` — Remove a file  
+cd <path> — Change current directory
 
----
+pwd — Print current working directory
 
-## Concepts Demonstrated
+tree — Display the full directory hierarchy recursively
 
-- Tree-based directory structure  
-- Parent–child–sibling pointer system  
-- Recursive traversal  
-- In-memory metadata handling  
-- Path parsing and command interpretation  
-- Error handling for invalid operations  
+File Operations
+
+touch <path> — Create an empty file
+
+write <path> <text> — Overwrite file content
+
+append <path> <text> — Append to existing content
+
+read <path> — Display file content
+
+rm <path> — Remove a file
+
+Concepts Demonstrated
+
+Tree-based directory structure
+
+Parent–child–sibling pointer system
+
+Recursive traversal
+
+In-memory metadata handling
+
+Path parsing and command interpretation
+
+Error handling for invalid operations
 
 This simulates simplified UNIX-like file system behavior.
 
----
-
-## Compilation
-
-```bash
+Compilation
 gcc -std=c11 -Wall -Wextra -o mini_fs mini_fs.c
+
 Why This Project Matters
+
 This project provides a practical, hands-on understanding of key operating system concepts, including:
 
 how file systems organize hierarchical data
@@ -65,14 +72,12 @@ operating system fundamentals
 storage and file system concepts
 
 Running the Program
-bash
-Copy code
 ./mini_fs
+
+
 This launches an interactive shell where you can run file system commands.
 
 Sample Usage
-bash
-Copy code
 mkdir dir1
 mkdir dir1/sub
 touch dir1/sub/hello.txt
@@ -80,18 +85,19 @@ write dir1/sub/hello.txt Hello_Isha
 read dir1/sub/hello.txt
 tree
 pwd
+
+
 Example output for tree:
 
-lua
-Copy code
 /
   dir1/
     sub/
       hello.txt
+
 Project Structure
-css
-Copy code
 mini_fs.c        -> Source code
 README.md        -> Documentation
+
 Author
+
 Isha Gupta
