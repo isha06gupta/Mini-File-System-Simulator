@@ -1,4 +1,4 @@
-# 📁 Mini File System Simulator (C)
+# Mini File System Simulator (C)
 
 A simple **in-memory file system simulator** written in C.  
 It supports hierarchical directories, file operations, recursive traversal, and shell-like navigation — similar to a minimal UNIX-style file system.
@@ -7,9 +7,9 @@ This project was built to explore **operating system fundamentals** such as dire
 
 ---
 
-## 🚀 Features  
+##Features  
 
-### **📂 Directory Operations**
+### ** Directory Operations**
 - **mkdir `<path>`** — Create a directory  
 - **rmdir `<path>`** — Remove an empty directory  
 - **ls `<path>`** — List contents of a directory  
@@ -19,7 +19,7 @@ This project was built to explore **operating system fundamentals** such as dire
 
 ---
 
-### **📄 File Operations**
+### ** File Operations**
 - **touch `<path>`** — Create an empty file  
 - **write `<path>` `<text>`** — Overwrite file content  
 - **append `<path>` `<text>`** — Append to existing content  
@@ -28,7 +28,7 @@ This project was built to explore **operating system fundamentals** such as dire
 
 ---
 
-## 🧠 Concepts Demonstrated
+##  Concepts Demonstrated
 
 - Tree-based directory structure  
 - Parent–child–sibling pointers  
@@ -41,7 +41,16 @@ This mirrors simplified UNIX-like file system behavior.
 
 ---
 
-## 🛠️ Compilation
+##  Compilation
 
 ```bash
 gcc -std=c11 -Wall -Wextra -o mini_fs mini_fs.c
+
+##  Sample Usage
+mkdir dir1
+mkdir dir1/sub
+touch dir1/sub/hello.txt
+write dir1/sub/hello.txt Hello_Isha
+read dir1/sub/hello.txt
+tree
+pwd
