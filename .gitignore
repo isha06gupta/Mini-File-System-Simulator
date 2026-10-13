@@ -1,0 +1,13 @@
+*.exe
+*.o
+*.wasm
+*.data
+*.js.map
+minifs.autosave
+journal.log
+.DS_Store
+
+# Generated Emscripten artifacts
+web/minifs-c.js
+web/minifs-c.wasm
+web/minifs-c.data

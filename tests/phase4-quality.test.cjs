@@ -1,0 +1,25 @@
+'use strict';
+const fs = require('node:fs');
+const path = require('node:path');
+const root = path.resolve(__dirname, '..');
+const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
+let checks = 0;
+function assert(condition, message) { checks++; if (!condition) { console.error('FAIL:', message); process.exitCode = 1; } }
+const html = read('web/wasm-lab.html');
+const js = read('web/wasm-lab.js');
+const css = read('web/wasm-lab.css');
+const bridge = read('wasm/minifs_wasm.c');
+const build = read('scripts/build-wasm.sh');
+const packageJson = JSON.parse(read('package.json'));
+assert(html.includes('id="commandForm"') && html.includes('id="tree"'), 'C lab has terminal and tree host');
+assert(html.includes('wasm-lab.js') && !html.includes('src="minifs-c.js"'), 'C lab loads optional wasm module dynamically');
+assert(js.includes('minifs_execute') && js.includes('minifs_export_tree_json'), 'browser bridge invokes C command and tree APIs');
+assert(js.includes('WebAssembly build not found'), 'missing wasm artifacts have a clear non-crashing state');
+assert(css.includes('@media(max-width:850px)'), 'C lab has responsive layout');
+assert(bridge.includes('minifs_init') && bridge.includes('minifs_execute') && bridge.includes('minifs_export_tree_json'), 'C adapter exposes lifecycle, command and tree APIs');
+assert(bridge.includes('clone_tree') && bridge.includes('cmd_undo') && bridge.includes('cmd_redo'), 'C adapter routes history operations to existing C implementation');
+assert(build.includes('EXPORTED_FUNCTIONS') && build.includes('MODULARIZE=1'), 'Emscripten build exports the callable module');
+assert(packageJson.scripts['test:wasm-api'], 'package scripts include C adapter API smoke test');
+assert(read('web/index.html').includes('wasm-lab.html'), 'main app links to C/WebAssembly lab');
+assert(read('scripts/serve.cjs').includes("'.wasm': 'application/wasm'"), 'local server serves WebAssembly MIME type');
+if (!process.exitCode) console.log(`PASS: ${checks} Phase 4 bridge, UI, build, and fallback checks.`);

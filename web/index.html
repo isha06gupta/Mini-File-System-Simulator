@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="An interactive file-system playground for learning commands, directory trees, and operating-system concepts.">
+  <title>MiniFS Lab — Learn by exploring</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="design-system.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="MiniFS Lab home">
+        <span class="brand-mark">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 6.5A2.5 2.5 0 0 1 5.5 4H10l2 2h6.5A2.5 2.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/>
+            <path d="M3 9h18"/>
+          </svg>
+        </span>
+        <span>
+          <strong>MiniFS <em>Lab</em></strong>
+          <small>OPERATING SYSTEMS PLAYGROUND</small>
+        </span>
+      </a>
+
+      <div class="side-label">WORKSPACE</div>
+
+      <button class="nav-item active" data-tab="simulator">
+        <span class="nav-icon">⌘</span>
+        Simulator
+        <span class="nav-pill">LIVE</span>
+      </button>
+
+      <button class="nav-item" data-tab="learn">
+        <span class="nav-icon">▤</span>
+        Command guide
+      </button>
+
+      <button class="nav-item" data-tab="practice">
+        <span class="nav-icon">◇</span>
+        Practice missions
+      </button>
+
+      <button class="nav-item" data-tab="concepts">
+        <span class="nav-icon">∿</span>
+        Concepts &amp; quiz
+      </button>
+
+      <a class="nav-item" href="wasm-lab.html">
+        <span class="nav-icon">C</span>
+        C / WebAssembly lab
+      </a>
+
+      <div class="side-label side-label-spaced">YOUR SESSION</div>
+
+      <div class="session-card">
+        <span class="status-dot"></span>
+        <div>
+          <strong>Local sandbox</strong>
+          <small>Changes stay in this browser</small>
+        </div>
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="mini-tip">
+          <span>✦</span>
+          <div>
+            <strong>Learn by doing</strong>
+            <p>Try a command, then inspect how the tree changes.</p>
+          </div>
+        </div>
+
+        <a class="repo-link"
+           href="https://github.com/isha06gupta/Mini-File-System-Simulator"
+           target="_blank"
+           rel="noreferrer">
+          View C source on GitHub <span>↗</span>
+        </a>
+
+        <div class="version">MINIFS LEARNING LAB</div>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Open navigation">
+          ☰
+        </button>
+
+        <div class="breadcrumb">
+          <span>Workspace</span>
+          <span class="crumb-sep">/</span>
+          <strong id="topSection">Simulator</strong>
+        </div>
+
+        <div class="top-actions">
+          <span class="runtime-status">
+            <span class="status-dot"></span>
+            Browser sandbox
+          </span>
+
+          <button class="icon-button"
+                  id="resetBtn"
+                  title="Reset file system"
+                  aria-label="Reset file system">
+            ↺
+          </button>
+
+          <a class="github-button"
+             href="https://github.com/isha06gupta/Mini-File-System-Simulator"
+             target="_blank"
+             rel="noreferrer">
+            GitHub <span>↗</span>
+          </a>
+        </div>
+      </header>
+
+      <section class="page-heading">
+        <div>
+          <div class="eyebrow">
+            <span class="eyebrow-line"></span>
+            EXPLORE · EXPERIMENT · UNDERSTAND
+          </div>
+
+          <h1 id="pageTitle">Your file system, <span>your rules.</span></h1>
+
+          <p id="pageSubtitle">
+            A safe, interactive playground for file-system commands and OS concepts.
+          </p>
+        </div>
+
+        <button class="primary-button" id="loadDemoBtn">
+          <span>▶</span> Load sample workspace
+        </button>
+      </section>
+
+      <div class="notice" id="runtimeNotice">
+        <span class="notice-icon">i</span>
+        <p>
+          <strong>Browser learning demo.</strong>
+          The main Learning Lab uses a JavaScript teaching engine.
+          Open the C Engine Lab to run the original C implementation through
+          WebAssembly when the compiled module is available.
+        </p>
+        <button id="dismissNotice" aria-label="Dismiss notice">×</button>
+      </div>
+
+      <section class="workspace-grid" id="simulatorView">
+        <div class="panel explorer-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="panel-title-icon">▱</span>
+              <div>
+                <h2>File explorer</h2>
+                <p>Browse your virtual directories</p>
+              </div>
+            </div>
+
+            <button class="dots-button"
+                    aria-label="Explorer options"
+                    id="explorerOptions">
+              ···
+            </button>
+          </div>
+
+          <div class="path-bar">
+            <span class="path-home">⌂</span>
+            <span id="currentPath">/</span>
+            <button id="upBtn"
+                    title="Go to parent directory"
+                    aria-label="Go to parent directory">
+              ↑
+            </button>
+          </div>
+
+          <div class="tree-toolbar">
+            <span>NAME</span>
+            <span>TYPE</span>
+          </div>
+
+          <div id="fileTree"
+               class="file-tree"
+               role="tree"
+               aria-label="Virtual file system">
+          </div>
+
+          <div class="explorer-footer">
+            <span><i class="tiny-dot"></i> Virtual filesystem</span>
+            <button id="newFolderBtn">＋ New folder</button>
+          </div>
+        </div>
+
+        <div class="right-column">
+          <div class="panel terminal-panel">
+            <div class="panel-header terminal-header">
+              <div class="panel-title">
+                <span class="terminal-icon">&gt;_</span>
+                <div>
+                  <h2>Command terminal</h2>
+                  <p>Type a command to get started</p>
+                </div>
+              </div>
+
+              <div class="terminal-actions">
+                <span class="terminal-live"><i></i> READY</span>
+                <button id="stepModeBtn"
+                        class="subtle-button"
+                        aria-pressed="false">
+                  Step mode: off
+                </button>
+                <button id="nextStepBtn" class="subtle-button hidden">
+                  Next step ↦
+                </button>
+                <button id="clearTerminalBtn" class="subtle-button">
+                  Clear
+                </button>
+              </div>
+            </div>
+
+            <div class="terminal-screen"
+                 id="terminalOutput"
+                 role="log"
+                 aria-live="polite"
+                 aria-label="Terminal output">
+              <div class="terminal-welcome">
+                <div class="welcome-glyph">⌘</div>
+                <strong>Welcome to MiniFS Lab</strong>
+                <p>Your virtual file system is ready. Try a command below.</p>
+
+                <button class="suggestion" data-command="help">
+                  help <span>View all commands</span> <b>↗</b>
+                </button>
+
+                <button class="suggestion" data-command="tree">
+                  tree <span>Explore the directory tree</span> <b>↗</b>
+                </button>
+
+                <button class="suggestion" data-command="mkdir projects">
+                  mkdir projects <span>Create a directory</span> <b>↗</b>
+                </button>
+              </div>
+            </div>
+
+            <form id="commandForm" class="command-form" autocomplete="off">
+              <label for="commandInput" class="prompt-mark">/›</label>
+              <input id="commandInput"
+                     spellcheck="false"
+                     autocapitalize="off"
+                     autocomplete="off"
+                     placeholder="Enter command… (try mkdir notes)"
+                     aria-label="Enter file system command">
+              <button type="submit" class="run-button">Run <span>↵</span></button>
+              <div id="autocomplete" class="autocomplete hidden"></div>
+            </form>
+
+            <div class="terminal-foot">
+              <span><kbd>↑</kbd> history <span class="foot-divider">·</span> <kbd>Tab</kbd> autocomplete</span>
+              <span id="commandCount">0 commands run</span>
+            </div>
+          </div>
+
+          <div class="panel inspector-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="inspector-icon">⌁</span>
+                <div>
+                  <h2>Learn as you go</h2>
+                  <p>Context for your last action</p>
+                </div>
+              </div>
+              <span class="learn-badge">LEARN</span>
+            </div>
+
+            <div id="learningContent" class="learning-content">
+              <div class="learning-empty">
+                <span>✳</span>
+                <strong>Every command teaches you something.</strong>
+                <p>Run a command to see what it does, its syntax, and the concept behind it.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="learnView" class="content-view hidden">
+        <div class="section-intro">
+          <span class="eyebrow">COMMAND REFERENCE</span>
+          <h2>Know the command. Understand the system.</h2>
+          <p>Choose a command to learn its syntax, purpose, and a practical example.</p>
+        </div>
+
+        <div class="command-cards" id="commandCards"></div>
+
+        <div class="source-explorer">
+          <div class="section-intro">
+            <span class="eyebrow">C SOURCE EXPLORER</span>
+            <h2>Connect the command to the code.</h2>
+            <p>Selected excerpts from the original C implementation, with the role each function plays.</p>
+          </div>
+
+          <div id="sourceCards" class="source-cards"></div>
+
+          <p class="source-note">
+            These excerpts explain the C implementation. The main Learning Lab
+            uses a JavaScript teaching engine; the separate C Engine Lab executes
+            the C implementation through WebAssembly.
+          </p>
+        </div>
+      </section>
+
+      <section id="practiceView" class="content-view hidden">
+        <div class="section-intro">
+          <span class="eyebrow">GUIDED PRACTICE</span>
+          <h2>Small missions. Real understanding.</h2>
+          <p>
+            Complete a task by running commands in the simulator. Your progress
+            is checked against the virtual file system.
+          </p>
+        </div>
+
+        <div class="mission-layout">
+          <div id="missionList" class="mission-list"></div>
+          <div class="panel mission-detail" id="missionDetail"></div>
+        </div>
+      </section>
+
+      <section id="conceptsView" class="content-view hidden">
+        <div class="section-intro">
+          <span class="eyebrow">OS CONCEPT LAB</span>
+          <h2>See the ideas behind the commands.</h2>
+          <p>
+            Explore tree structure, depth-first traversal, complexity, and quick
+            knowledge checks. Metrics describe the browser-side demo engine,
+            not native C runtime instrumentation.
+          </p>
+        </div>
+
+        <div class="concept-grid">
+          <article class="panel concept-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-title-icon">⌘</span>
+                <div>
+                  <h2>Live filesystem metrics</h2>
+                  <p>Calculated from the current virtual tree</p>
+                </div>
+              </div>
+            </div>
+            <div id="conceptMetrics" class="metric-grid"></div>
+          </article>
+
+          <article class="panel concept-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-title-icon">↳</span>
+                <div>
+                  <h2>Traversal visualizer</h2>
+                  <p>Depth-first, pre-order walk</p>
+                </div>
+              </div>
+              <span class="learn-badge">LIVE TREE</span>
+            </div>
+
+            <p class="concept-copy">
+              A node is visited before its children. The sequence below is
+              recalculated from the current filesystem.
+            </p>
+
+            <div id="traversalNodes"
+                 class="traversal-nodes"
+                 aria-live="polite">
+            </div>
+
+            <div class="visualizer-actions">
+              <button id="traversalPrev" class="secondary-button">← Previous</button>
+              <button id="traversalNext" class="primary-button">Next node →</button>
+              <button id="traversalReset" class="secondary-button">Restart</button>
+            </div>
+
+            <p id="traversalCaption" class="concept-caption">
+              Start the traversal to inspect each visited node.
+            </p>
+          </article>
+
+          <article class="panel concept-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-title-icon">⌘</span>
+                <div>
+                  <h2>How the tree is linked</h2>
+                  <p>Conceptual view of the native C representation</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="pointer-diagram">
+              <div class="pointer-node root-node">Node: /<small>parent = NULL</small></div>
+              <div class="pointer-connector"></div>
+              <div class="pointer-children">
+                <div class="pointer-node">Node: docs<small>parent → /</small></div>
+                <div class="pointer-node">Node: src<small>parent → /</small></div>
+                <div class="pointer-node">Node: notes.txt<small>parent → /</small></div>
+              </div>
+            </div>
+
+            <p class="concept-copy">
+              The C implementation uses <code>parent</code>, <code>child</code>,
+              and <code>sibling</code> pointers. This diagram is illustrative;
+              use the live traversal above to inspect your current browser tree.
+            </p>
+          </article>
+
+          <article class="panel concept-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="panel-title-icon">ƒ</span>
+                <div>
+                  <h2>Complexity guide</h2>
+                  <p>Big-O estimates depend on the data structure and operation</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="complexity-list">
+              <div>
+                <code>mkdir / touch</code>
+                <span>O(k + d)</span>
+                <small>Path components plus searching the destination directory's children.</small>
+              </div>
+              <div>
+                <code>tree / find</code>
+                <span>O(N)</span>
+                <small>May visit every node in the traversed subtree.</small>
+              </div>
+              <div>
+                <code>cp / recursive rm</code>
+                <span>O(S)</span>
+                <small>S is the number of nodes in the copied or removed subtree.</small>
+              </div>
+              <div>
+                <code>undo (snapshots)</code>
+                <span>O(N)</span>
+                <small>Snapshot copying can traverse the full filesystem tree.</small>
+              </div>
+            </div>
+
+            <p class="concept-copy">
+              These are educational estimates, not measured timings.
+              N = nodes visited, k = path components, d = entries examined in a
+              directory, S = subtree nodes.
+            </p>
+          </article>
+        </div>
+
+        <article class="panel quiz-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="panel-title-icon">?</span>
+              <div>
+                <h2>Knowledge check</h2>
+                <p>Short OS questions with explanations</p>
+              </div>
+            </div>
+            <span id="quizProgress" class="learn-badge">0 / 5 answered</span>
+          </div>
+
+          <div id="quizContent" class="quiz-content"></div>
+
+          <div class="quiz-footer">
+            <span id="quizScore" class="concept-caption">Score: 0 / 5</span>
+            <button id="resetQuiz" class="secondary-button">Try quiz again</button>
+          </div>
+        </article>
+
+        <div class="learning-progress panel">
+          <div>
+            <span class="eyebrow">YOUR LEARNING</span>
+            <h2>Progress on this device</h2>
+            <p>Quiz answers and completed missions are stored locally in this browser.</p>
+          </div>
+          <div id="learningProgressSummary" class="progress-summary"></div>
+        </div>
+      </section>
+
+      <footer class="page-footer">
+        <span>MiniFS Lab <span class="foot-divider">·</span> Built for learning operating systems</span>
+        <span>Learning lab <span class="foot-divider">·</span> No account required</span>
+      </footer>
+    </main>
+  </div>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+
+  <dialog id="newFolderDialog" class="modal">
+    <form id="newFolderForm" method="dialog">
+      <div class="modal-heading">
+        <h2>Create a directory</h2>
+        <button type="button"
+                class="modal-close"
+                id="closeFolderDialog"
+                aria-label="Close">
+          ×
+        </button>
+      </div>
+
+      <p>Create a directory inside <code id="folderParentPath">/</code>.</p>
+
+      <label for="folderName">Directory name</label>
+      <input id="folderName"
+             required
+             maxlength="63"
+             pattern="[^/\\.][^/\\]*"
+             placeholder="e.g. projects">
+
+      <div class="modal-actions">
+        <button type="button" class="secondary-button" id="cancelFolderBtn">
+          Cancel
+        </button>
+        <button type="submit" class="primary-button">
+          Create directory
+        </button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="theme.js"></script>
+  <script src="engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

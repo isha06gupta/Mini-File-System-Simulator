@@ -1,0 +1,66 @@
+
+name: Deploy MiniFS Learning Lab to GitHub Pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - 'wasm/**'
+      - 'mini_fs.c'
+      - 'scripts/build-wasm.cjs'
+      - 'scripts/build-wasm.sh'
+      - 'scripts/build-wasm.ps1'
+      - '.github/workflows/pages.yml'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Emscripten
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y emscripten
+
+      - name: Build C engine for WebAssembly
+        run: npm run build:wasm
+
+      - name: Verify deployable assets
+        run: |
+          test -s web/index.html
+          test -s web/app.js
+          test -s web/engine.js
+          test -s web/styles.css
+          test -s web/wasm-lab.html
+          test -s web/wasm-lab.js
+          test -s web/minifs-c.js
+          test -s web/minifs-c.wasm
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

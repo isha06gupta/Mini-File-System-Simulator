@@ -1,0 +1,45 @@
+name: Quality checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Set up GCC
+        run: sudo apt-get update && sudo apt-get install -y gcc
+      - name: Run JavaScript checks and tests
+        run: npm test
+      - name: Check native C compilation
+        run: gcc -std=c11 -Wall -Wextra -Wpedantic -fsyntax-only mini_fs.c
+      - name: Native C command smoke test
+        run: |
+          gcc -std=c11 -Wall -Wextra -Wpedantic -o /tmp/minifs-smoke mini_fs.c
+          mkdir -p /tmp/minifs-smoke-run
+          cd /tmp/minifs-smoke-run
+          printf 'mkdir ci-check\ntouch ci-check/hello.txt\nwrite ci-check/hello.txt CI_OK\nread ci-check/hello.txt\nfsck\nexit\n' | /tmp/minifs-smoke > output.txt
+          grep -q 'CI_OK' output.txt
+          grep -q 'fsck: filesystem is consistent' output.txt
+
+  wasm-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Install Emscripten
+        run: sudo apt-get update && sudo apt-get install -y emscripten
+      - name: Build browser WebAssembly module
+        run: sh scripts/build-wasm.sh
+      - name: Verify generated artifacts
+        run: test -s web/minifs-c.js && test -s web/minifs-c.wasm

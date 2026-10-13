@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>MiniFS C Engine Lab</title>
+  <link rel="stylesheet" href="wasm-lab.css">
+  <link rel="stylesheet" href="design-system.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="back" href="index.html">← Main Learning Lab</a>
+      <span class="tag">C ENGINE · WEBASSEMBLY</span>
+    </header>
+
+    <section class="hero">
+      <p class="eyebrow">REAL C IMPLEMENTATION</p>
+      <h1>MiniFS C Engine Lab</h1>
+      <p>
+        Commands on this page are passed to the C implementation compiled to
+        WebAssembly. The tree below is exported from the C engine itself.
+      </p>
+      <div id="runtimeStatus"
+           class="status status-warn"
+           role="status">
+        Checking for the compiled WebAssembly module…
+      </div>
+    </section>
+
+    <section class="workspace">
+      <article class="panel terminal-panel">
+        <div class="panel-head">
+          <div>
+            <h2>Command terminal</h2>
+            <p>
+              Try <code>mkdir docs</code>,
+              <code>touch docs/notes.txt</code>, or <code>help</code>.
+            </p>
+          </div>
+          <button id="clearBtn" class="ghost" type="button">
+            Clear output
+          </button>
+        </div>
+
+        <div id="output"
+             class="output"
+             role="log"
+             aria-live="polite">
+          <div class="line muted">Waiting for the C engine…</div>
+        </div>
+
+        <form id="commandForm" class="command-form">
+          <label for="commandInput">/›</label>
+          <input id="commandInput"
+                 autocomplete="off"
+                 spellcheck="false"
+                 placeholder="Enter a MiniFS command"
+                 aria-label="MiniFS command"
+                 disabled>
+          <button id="runBtn" type="submit" disabled>
+            Run ↵
+          </button>
+        </form>
+
+        <div class="quick-actions">
+          <button data-command="help" type="button">help</button>
+          <button data-command="mkdir docs" type="button">mkdir docs</button>
+          <button data-command="tree" type="button">tree</button>
+          <button data-command="fsck" type="button">fsck</button>
+        </div>
+      </article>
+
+      <article class="panel tree-panel">
+        <div class="panel-head">
+          <div>
+            <h2>C-managed directory tree</h2>
+            <p>Refreshed from the C engine after every command.</p>
+          </div>
+          <button id="resetBtn" class="ghost" type="button" disabled>
+            Reset C engine
+          </button>
+        </div>
+
+        <div id="cwd" class="cwd">Current path: /</div>
+
+        <div id="tree" class="tree">
+          <p class="muted">The tree will appear when the C engine loads.</p>
+        </div>
+
+        <details class="details">
+          <summary>How this differs from the main demo</summary>
+          <p>
+            The main Learning Lab uses its JavaScript teaching engine. This
+            page calls the C engine through WebAssembly and renders the tree
+            JSON returned by C. If WebAssembly build artifacts are absent,
+            this page stays disabled instead of silently pretending to use C.
+          </p>
+        </details>
+      </article>
+    </section>
+
+    <footer>
+      MiniFS Learning Lab · Local browser sandbox · No files on your computer are modified
+    </footer>
+  </main>
+
+  <script src="theme.js"></script>
+  <script src="wasm-lab.js"></script>
+</body>
+</html>
