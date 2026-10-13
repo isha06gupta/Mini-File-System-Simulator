@@ -1,5 +1,11 @@
 # MiniFS Learning Lab
 
+
+**[Live Demo](https://isha06gupta.github.io/Mini-File-System-Simulator/) · [Source Code](https://github.com/isha06gupta/Mini-File-System-Simulator)**
+
+> Try the deployed MiniFS Learning Lab in your browser. The C/WebAssembly lab requires its deployment build to complete successfully.
+
+
 An interactive, browser-based learning environment for file-system commands and Operating Systems concepts. MiniFS Learning Lab combines a virtual filesystem simulator with guided practice, visual explanations, quizzes, and a separate C engine compiled to WebAssembly.
 
 ## Contents
